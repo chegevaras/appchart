@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     environment {
-        // Переменные окружения для Helm и kubectl
         HELM_VERSION = 'v3.7.1'
         REPO_URL = 'https://github.com/chegevaras/appchart.git'
         CHART_PATH = 'app-chart'
@@ -14,7 +13,6 @@ pipeline {
         stage('Install Helm') {
             steps {
                 script {
-                    // Устанавливаем Helm
                     sh '''
                     if ! [ -x "$(command -v helm)" ]; then
                       curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
@@ -29,7 +27,6 @@ pipeline {
         stage('Clone Repo') {
             steps {
                 script {
-                    // Клонируем репозиторий
                     sh '''
                     if [ -d "appchart" ]; then
                       rm -rf appchart
@@ -43,7 +40,6 @@ pipeline {
         stage('Deploy Helm Chart') {
             steps {
                 script {
-                    // Устанавливаем Helm чарт из локальной директории
                     sh '''
                     helm upgrade --install $RELEASE_NAME ./appchart/$CHART_PATH --namespace $NAMESPACE --create-namespace
                     '''
@@ -54,7 +50,6 @@ pipeline {
         stage('Get Pods') {
             steps {
                 script {
-                    // Получаем список подов в namespace
                     sh '''
                     kubectl get pods -n $NAMESPACE
                     '''

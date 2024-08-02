@@ -3,9 +3,10 @@ pipeline {
 
     environment {
         // Переменные окружения для Helm и kubectl
+        KUBECONFIG = credentials('kubeconfig-credentials-id')
         HELM_VERSION = 'v3.7.1'
-        CHART_REPO = 'https://raw.githubusercontent.com/chegevaras/appchart/main/app-chart'
-        CHART_NAME = 'appchart'
+        REPO_URL = 'https://github.com/chegevaras/appchart.git'
+        CHART_PATH = 'app-chart'
         RELEASE_NAME = 'my-release'
         NAMESPACE = 'neoflex'
     }
@@ -26,13 +27,15 @@ pipeline {
             }
         }
 
-        stage('Add Helm Repo') {
+        stage('Clone Repo') {
             steps {
                 script {
-                    // Добавляем Helm репозиторий
+                    // Клонируем репозиторий
                     sh '''
-                    helm repo add myrepo $CHART_REPO
-                    helm repo update
+                    if [ -d "appchart" ]; then
+                      rm -rf appchart
+                    fi
+                    git clone $REPO_URL
                     '''
                 }
             }
@@ -41,9 +44,9 @@ pipeline {
         stage('Deploy Helm Chart') {
             steps {
                 script {
-                    // Устанавливаем Helm чарт
+                    // Устанавливаем Helm чарт из локальной директории
                     sh '''
-                    helm upgrade --install $RELEASE_NAME myrepo/$CHART_NAME --namespace $NAMESPACE --create-namespace
+                    helm upgrade --install $RELEASE_NAME ./appchart/$CHART_PATH --kubeconfig $KUBECONFIG --namespace $NAMESPACE --create-namespace
                     '''
                 }
             }

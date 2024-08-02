@@ -4,7 +4,7 @@ pipeline {
     environment {
         // Переменные окружения для Helm и kubectl
         HELM_VERSION = 'v3.7.1'
-        CHART_REPO = 'https://raw.githubusercontent.com/chegevaras/appchart/main'
+        CHART_REPO = 'https://raw.githubusercontent.com/chegevaras/appchart/main/app-chart'
         CHART_NAME = 'appchart'
         RELEASE_NAME = 'my-release'
         NAMESPACE = 'neoflex'

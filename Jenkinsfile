@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         // Переменные окружения для Helm и kubectl
-        KUBECONFIG = credentials('kubeconfig-credentials-id')
         HELM_VERSION = 'v3.7.1'
         CHART_REPO = 'https://raw.githubusercontent.com/chegevaras/appchart/main'
         CHART_NAME = 'appchart'
@@ -44,7 +43,7 @@ pipeline {
                 script {
                     // Устанавливаем Helm чарт
                     sh '''
-                    helm upgrade --install $RELEASE_NAME myrepo/$CHART_NAME --kubeconfig $KUBECONFIG --namespace $NAMESPACE --create-namespace
+                    helm upgrade --install $RELEASE_NAME myrepo/$CHART_NAME --namespace $NAMESPACE --create-namespace
                     '''
                 }
             }
